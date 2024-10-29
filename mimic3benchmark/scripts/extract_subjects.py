@@ -32,6 +32,17 @@ if args.verbose:
     print('START:\n\tICUSTAY_IDs: {}\n\tHADM_IDs: {}\n\tSUBJECT_IDs: {}'.format(stays.ICUSTAY_ID.unique().shape[0],
           stays.HADM_ID.unique().shape[0], stays.SUBJECT_ID.unique().shape[0]))
 
+# ** additional step here **
+# Load and merge sociodemographic data
+sociodemographic_data = pd.read_csv(os.path.join(args.mimic3_path, 'sociodemographic_data.csv'))
+stays = stays.merge(sociodemographic_data, on=['HADM_ID', 'ICUSTAY_ID'], how='left')
+
+# Save intermediate file with sociodemographic data
+intermediate_path = os.path.join(args.output_path, 'base_stays_with_sociodemographic_data.csv')
+stays.to_csv(intermediate_path, index=False)
+if args.verbose:
+    print(f'Intermediate file saved to {intermediate_path}')
+
 stays = remove_icustays_with_transfers(stays)
 if args.verbose:
     print('REMOVE ICU TRANSFERS:\n\tICUSTAY_IDs: {}\n\tHADM_IDs: {}\n\tSUBJECT_IDs: {}'.format(stays.ICUSTAY_ID.unique().shape[0],
@@ -63,6 +74,13 @@ phenotypes = add_hcup_ccs_2015_groups(diagnoses, yaml.safe_load(open(args.phenot
 make_phenotype_label_matrix(phenotypes, stays).to_csv(os.path.join(args.output_path, 'phenotype_labels.csv'),
                                                       index=False, quoting=csv.QUOTE_NONNUMERIC)
 
+# **additional step here**
+# Save final processed DataFrame after all preprocessing steps
+final_output_path = os.path.join(args.output_path, 'stays_final_processed.csv')
+stays.to_csv(final_output_path, index=False)
+if args.verbose:
+    print(f'Final processed DataFrame saved to {final_output_path}')
+
 if args.test:
     pat_idx = np.random.choice(patients.shape[0], size=1000)
     patients = patients.iloc[pat_idx]
@@ -78,3 +96,10 @@ items_to_keep = set(
 for table in args.event_tables:
     read_events_table_and_break_up_by_subject(args.mimic3_path, table, args.output_path, items_to_keep=items_to_keep,
                                               subjects_to_keep=subjects)
+
+# **additional step here**
+# Save processed test DataFrame
+test_output_path = os.path.join(args.output_path, 'test_stays_final_processed.csv')
+stays.to_csv(test_output_path, index=False)
+if args.verbose:
+    print(f'Processed test DataFrame saved to {test_output_path}')
