@@ -54,6 +54,7 @@ for subject_dir in tqdm(os.listdir(args.subjects_root_path), desc='Iterating ove
     # extracting separate episodes
     for i in range(stays.shape[0]):
         stay_id = stays.ICUSTAY_ID.iloc[i]
+        hadm_id = stays.HADM_ID.iloc[i]  # Extracting HADM_ID for filename
         intime = stays.INTIME.iloc[i]
         outtime = stays.OUTTIME.iloc[i]
 
@@ -66,11 +67,22 @@ for subject_dir in tqdm(os.listdir(args.subjects_root_path), desc='Iterating ove
         if stay_id in episodic_data.index:
             episodic_data.loc[stay_id, 'Weight'] = get_first_valid_from_timeseries(episode, 'Weight')
             episodic_data.loc[stay_id, 'Height'] = get_first_valid_from_timeseries(episode, 'Height')
-        episodic_data.loc[episodic_data.index == stay_id].to_csv(os.path.join(args.subjects_root_path, subject_dir,
-                                                                              'episode{}.csv'.format(i+1)),
-                                                                 index_label='Icustay')
+
+        # Modify summary filename to include HADM_ID and ICUSTAY_ID
+        summary_filename = 'episode{}_HADM{}_ICUSTAY{}.csv'.format(i+1, hadm_id, stay_id)
+        episodic_data.loc[episodic_data.index == stay_id].to_csv(
+            os.path.join(args.subjects_root_path, subject_dir, summary_filename),
+            index_label='Icustay'
+        )
+        
         columns = list(episode.columns)
         columns_sorted = sorted(columns, key=(lambda x: "" if x == "Hours" else x))
         episode = episode[columns_sorted]
-        episode.to_csv(os.path.join(args.subjects_root_path, subject_dir, 'episode{}_timeseries.csv'.format(i+1)),
-                       index_label='Hours')
+
+        # Modify detailed timeseries filename to include HADM_ID and ICUSTAY_ID
+        timeseries_filename = 'episode{}_timeseries_HADM{}_ICUSTAY{}.csv'.format(i+1, hadm_id, stay_id)
+        episode.to_csv(
+                os.path.join(args.subjects_root_path, subject_dir, timeseries_filename),
+                index_label='Hours'
+        )
+        
