@@ -170,6 +170,10 @@ elif args.mode == 'test':
 
     predictions = model.predict(data, batch_size=args.batch_size, verbose=1)
     predictions = np.array(predictions)[:, 0]
+
+    #for name, label, prediction in zip(names[:3], labels[:3], predictions[:3]):
+    #  print(f"Name: {name}, True Label: {label}, Prediction: {prediction}")
+   
     metrics.print_metrics_binary(labels, predictions)
 
     path = os.path.join(args.output_dir, "test_predictions", os.path.basename(args.load_state)) + ".csv"
