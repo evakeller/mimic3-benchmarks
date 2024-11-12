@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 import os
-import imp
+import importlib
 import re
 
 from mimic3models.length_of_stay import utils
@@ -71,7 +71,9 @@ args_dict['num_classes'] = (1 if args.partition == 'none' else 10)
 
 # Build the model
 print("==> using model {}".format(args.network))
-model_module = imp.load_source(os.path.basename(args.network), args.network)
+spec = importlib.util.spec_from_file_location(os.path.basename(args.network), args.network)
+model_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(model_module)
 model = model_module.Network(**args_dict)
 suffix = "{}.bs{}{}{}.ts{}.partition={}".format("" if not args.deep_supervision else ".dsup",
                                                 args.batch_size,
@@ -86,7 +88,7 @@ print("==> model.final_name:", model.final_name)
 # Compile the model
 print("==> compiling the model")
 optimizer_config = {'class_name': args.optimizer,
-                    'config': {'lr': args.lr,
+                    'config': {'learning_rate': args.lr,
                                'beta_1': args.beta_1}}
 
 if args.partition == 'none':
@@ -139,7 +141,7 @@ else:
                                   shuffle=False)
 if args.mode == 'train':
     # Prepare training
-    path = os.path.join(args.output_dir, 'keras_states/' + model.final_name + '.chunk{epoch}.test{val_loss}.state')
+    path = os.path.join(args.output_dir, 'keras_states/' + model.final_name + '.chunk{epoch}.keras')
 
     metrics_callback = keras_utils.LengthOfStayMetrics(train_data_gen=train_data_gen,
                                                        val_data_gen=val_data_gen,
@@ -150,7 +152,7 @@ if args.mode == 'train':
     dirname = os.path.dirname(path)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
-    saver = ModelCheckpoint(path, verbose=1, period=args.save_every)
+    saver = ModelCheckpoint(path, verbose=1, save_freq=args.save_every)
 
     keras_logs = os.path.join(args.output_dir, 'keras_logs')
     if not os.path.exists(keras_logs):
@@ -159,7 +161,7 @@ if args.mode == 'train':
                            append=True, separator=';')
 
     print("==> training")
-    model.fit_generator(generator=train_data_gen,
+    model.fit(train_data_gen,
                         steps_per_epoch=train_data_gen.steps,
                         validation_data=val_data_gen,
                         validation_steps=val_data_gen.steps,

@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 import os
-import imp
+import importlib
 import re
 
 from mimic3models.phenotyping import utils
@@ -59,7 +59,9 @@ args_dict['target_repl'] = target_repl
 
 # Build the model
 print("==> using model {}".format(args.network))
-model_module = imp.load_source(os.path.basename(args.network), args.network)
+spec = importlib.util.spec_from_file_location(os.path.basename(args.network), args.network)
+model_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(model_module)
 model = model_module.Network(**args_dict)
 suffix = ".bs{}{}{}.ts{}{}".format(args.batch_size,
                                    ".L1{}".format(args.l1) if args.l1 > 0 else "",
@@ -73,7 +75,7 @@ print("==> model.final_name:", model.final_name)
 # Compile the model
 print("==> compiling the model")
 optimizer_config = {'class_name': args.optimizer,
-                    'config': {'lr': args.lr,
+                    'config': {'learning_rate': args.lr,
                                'beta_1': args.beta_1}}
 
 # NOTE: one can use binary_crossentropy even for (B, T, C) shape.
@@ -108,7 +110,7 @@ val_data_gen = utils.BatchGen(val_reader, discretizer,
 
 if args.mode == 'train':
     # Prepare training
-    path = os.path.join(args.output_dir, 'keras_states/' + model.final_name + '.epoch{epoch}.test{val_loss}.state')
+    path = os.path.join(args.output_dir, 'keras_states/' + model.final_name + '.epoch{epoch}.keras')
 
     metrics_callback = keras_utils.PhenotypingMetrics(train_data_gen=train_data_gen,
                                                       val_data_gen=val_data_gen,
@@ -118,7 +120,7 @@ if args.mode == 'train':
     dirname = os.path.dirname(path)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
-    saver = ModelCheckpoint(path, verbose=1, period=args.save_every)
+    saver = ModelCheckpoint(path, verbose=1, save_freq=args.save_every)
 
     keras_logs = os.path.join(args.output_dir, 'keras_logs')
     if not os.path.exists(keras_logs):
@@ -127,7 +129,7 @@ if args.mode == 'train':
                            append=True, separator=';')
 
     print("==> training")
-    model.fit_generator(generator=train_data_gen,
+    model.fit(train_data_gen,
                         steps_per_epoch=train_data_gen.steps,
                         validation_data=val_data_gen,
                         validation_steps=val_data_gen.steps,

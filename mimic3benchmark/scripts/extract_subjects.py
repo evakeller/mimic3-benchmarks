@@ -35,7 +35,11 @@ if args.verbose:
 # ** additional step here **
 # Load and merge sociodemographic data
 sociodemographic_data = pd.read_csv(os.path.join(args.mimic3_path, 'sociodemographic_data.csv'))
-stays = stays.merge(sociodemographic_data, on=['HADM_ID', 'ICUSTAY_ID'], how='left')
+
+stays = stays.merge(sociodemographic_data, on=['SUBJECT_ID', 'HADM_ID', 'ICUSTAY_ID'], how='left')
+
+stays = stays.drop([col for col in stays.columns if col.endswith('_y')], axis=1)
+stays = stays.rename(columns={col: col[:-2] for col in stays.columns if col.endswith('_x')})
 
 # Save intermediate file with sociodemographic data
 intermediate_path = os.path.join(args.output_path, 'base_stays_with_sociodemographic_data.csv')
@@ -59,6 +63,9 @@ stays = add_age_to_icustays(stays)
 stays = add_inunit_mortality_to_icustays(stays)
 stays = add_inhospital_mortality_to_icustays(stays)
 stays = filter_icustays_on_age(stays)
+
+print(stays["DOB"].describe())
+
 if args.verbose:
     print('REMOVE PATIENTS AGE < 18:\n\tICUSTAY_IDs: {}\n\tHADM_IDs: {}\n\tSUBJECT_IDs: {}'.format(stays.ICUSTAY_ID.unique().shape[0],
           stays.HADM_ID.unique().shape[0], stays.SUBJECT_ID.unique().shape[0]))
