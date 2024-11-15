@@ -257,6 +257,8 @@ Use the following command for logistic regression. It will have L1 regularizatio
        python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_lstm.py --dim 512 --timestep 1 --mode train --batch_size 16 --dropout 0.3 --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --output_dir /data/qmia/mimic3/multitask/out --data /data/qmia/mimic3/multitask/ --verbose 1
 ```
 
+NONE OF THE OTHER MODEL TYPES WORK
+
 ## General todos:
 
 - Improve comments and documentation
