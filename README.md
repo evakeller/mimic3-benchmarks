@@ -183,13 +183,13 @@ Use the following command to extract validation set from the training set. This 
 Run the following command to train the neural network which gives the best result. We got the best performance on validation set after 28 epochs.
 
 ```bash
-       python -um mimic3models.in_hospital_mortality.main --network mimic3models/keras_models/lstm.py --dim 16 --timestep 1.0 --depth 2 --dropout 0.3 --mode train --batch_size 8 --output_dir /data/qmia/mimic3old/in_hospital_mortality --data /data/qmia/mimic3old/in-hospital-mortality/ --verbose 1
+       python -um mimic3models.in_hospital_mortality.main --network mimic3models/keras_models/lstm.py --dim 16 --timestep 1.0 --depth 2 --dropout 0.3 --mode train --batch_size 8 --output_dir /data/qmia/mimic3old/in-hospital-mortality --data /data/qmia/mimic3old/in-hospital-mortality/ --verbose 1
 ```
 
 Use the following command to train logistic regression. The best model we got used L2 regularization with `C=0.001`:
 
 ```bash
-       python -um mimic3models.in_hospital_mortality.logistic.main --l2 --C 0.001 --output_dir /data/qmia/mimic3old/in_hospital_mortality/logistic --data /data/qmia/mimic3old/in-hospital-mortality/
+       python -um mimic3models.in_hospital_mortality.logistic.main --l2 --C 0.001 --output_dir /data/qmia/mimic3old/in-hospital-mortality/logistic --data /data/qmia/mimic3old/in-hospital-mortality
 ```
 
 ### Decompensation prediction
@@ -197,7 +197,7 @@ Use the following command to train logistic regression. The best model we got us
 The best model we got for this task was trained for 36 chunks (that's less than one epoch; it overfits before reaching one epoch because there are many training samples for the same patient with different lengths).
 
 ```bash
-       python -um mimic3models.decompensation.main --network mimic3models/keras_models/lstm.py --dim 128 --timestep 1.0 --depth 1 --mode train --batch_size 8 --output_dir /data/qmia/mimic3old/decompensation --data /data/qmia/mimic3old/decompensation/
+       python -um mimic3models.decompensation.main --network mimic3models/keras_models/lstm.py --dim 128 --timestep 1.0 --depth 1 --mode train --batch_size 8 --output_dir /data/qmia/mimic3old/decompensation --data /data/qmia/mimic3old/decompensation/ --verbose 1
 ```
 
 Use the following command to train a logistic regression. It will have L2 regularization with `C=0.001`, which gave us the best result. To run a grid search over a space of hyper-parameters add `--grid-search` to the command.
@@ -211,7 +211,7 @@ Use the following command to train a logistic regression. It will have L2 regula
 The best model we got for this task was trained for 19 chunks.
 
 ```bash
-       python -um mimic3models.length_of_stay.main --network mimic3models/keras_models/lstm.py --dim 64 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8 --partition custom --output_dir /data/qmia/mimic3old/length_of_stay --data /data/qmia/mimic3old/length-of-stay/
+       python -um mimic3models.length_of_stay.main --network mimic3models/keras_models/lstm.py --dim 64 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8 --partition custom --output_dir /data/qmia/mimic3old/length_of_stay --data /data/qmia/mimic3old/length-of-stay/ --verbose 1
 ```
 
 Use the following command to train a logistic regression. It will have L1 regularization with `C=0.00001`. To run a grid search over a space of hyperparameters add `--grid-search` to the command.
@@ -231,7 +231,7 @@ To run a linear regression use this command:
 The best model we got for this task was trained for 20 epochs.
 
 ```bash
-       python -um mimic3models.phenotyping.main --network mimic3models/keras_models/lstm.py --dim 256 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8 --output_dir /data/qmia/mimic3old/phenotyping --data /data/qmia/mimic3old/phenotyping/
+       python -um mimic3models.phenotyping.main --network mimic3models/keras_models/lstm.py --dim 256 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8 --output_dir /data/qmia/mimic3old/phenotyping --data /data/qmia/mimic3old/phenotyping/ --verbose 1
 ```
 
 Use the following command for logistic regression. It will have L1 regularization with `C=0.1`. To run a grid search over a space of hyperparameters add `--grid-search` to the command.
@@ -245,7 +245,7 @@ Use the following command for logistic regression. It will have L1 regularizatio
 `ihm_C`, `decomp_C`, `los_C` and `ph_C` coefficients control the relative weight of the tasks in the multitask model. Default is `1.0`. Multitask network architectures are stored in `mimic3models/multitask/keras_models`. Here is a sample command for running a multitasking model.
 
 ```bash
-       python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_lstm.py --dim 512 --timestep 1 --mode train --batch_size 16 --dropout 0.3 --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --output_dir /data/qmia/mimic3old/multitask --data /data/qmia/mimic3old/multitask/
+       python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_lstm.py --dim 512 --timestep 1 --mode train --batch_size 16 --dropout 0.3 --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --output_dir /data/qmia/mimic3old/multitask --data /data/qmia/mimic3old/multitask/ --verbose 1
 ```
 
 ## General todos:
