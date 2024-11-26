@@ -47,7 +47,9 @@ python -m mimic3benchmark.evaluation.evaluate_ihm --test_listfile /data/qmia/mim
 
 python -m mimic3benchmark.evaluation.evaluate_ihm --test_listfile /data/qmia/mimic3old/in-hospital-mortality/test_listfile.csv --n_iters 10000 --save_file /data/qmia/mimic3old/in-hospital-mortality/evaluation2.json /data/qmia/mimic3old/in-hospital-mortality/test_predictions/ihm/k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0_partition=custom_ihm=0.2_decomp=1.0_los=1.5_pheno=1.0.epoch39.test2.281008511131477.state.csv
 
-python -m mimic3benchmark.evaluation.evaluate_decomp --test_listfile /data/qmia/mimic3old/decompensation/test_listfile.csv --n_iters 10000 --save_file /data/qmia/mimic3old/decompensation/evaluation1.json /data/qmia/mimic3old/decompensation/out/test_predictions/k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.chunk26.test0.13876368537890316.state.csv
+python -m mimic3benchmark.evaluation.evaluate_decomp --test_listfile /data/qmia/mimic3old/decompensation/test_listfile.csv --n_iters 1000 --save_file /data/qmia/mimic3old/decompensation/evaluation1.json /data/qmia/mimic3old/decompensation/out/test_predictions/k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.chunk26.test0.13876368537890316.state.csv
+
+python -m mimic3benchmark.evaluation.evaluate_decomp --test_listfile /data/qmia/mimic3old/decompensation/test_listfile.csv --n_iters 1000 --save_file /data/qmia/mimic3old/decompensation/evaluation2.json /data/qmia/mimic3old/decompensation/out/test_predictions/k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.chunk26.test0.13876368537890316.state.csv
 
 ```
 
