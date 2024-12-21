@@ -41,11 +41,11 @@ To run the models on other test sets you can change the test set path in corresp
 
 ##### Multitask channel-wise LSTM HERE
 
-        python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_channel_wise_lstms.py --dim 16 --size_coef 8 --dropout 0.3 --depth 1 --batch_size 8 --timestep 1.0 --mode train --partition custom --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --data /data/qmia/mimic3old/multitask --output_dir /data/qmia/mimic3old/in-hospital-mortality --verbose 1
+        python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_channel_wise_lstms.py --dim 16 --size_coef 8 --dropout 0.3 --depth 1 --batch_size 8 --timestep 1.0 --mode train --partition custom --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --data /data/qmia/mimic3old/multitask --output_dir /data/qmia/mimic3old/in-hospital-mortality --verbose 1 --prefix gpu_one
 
-        python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_channel_wise_lstms.py --dim 16 --size_coef 8 --dropout 0.3 --depth 1 --batch_size 8 --timestep 1.0 --mode test --partition custom --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --data /data/qmia/mimic3old/multitask --output_dir /data/qmia/mimic3old/in-hospital-mortality --verbose 1 --load_state
+        find /data/qmia/mimic3old/in-hospital-mortality/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0_partition*' | xargs -I {} -P 10 python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_channel_wise_lstms.py --dim 16 --size_coef 8 --dropout 0.3 --depth 1 --batch_size 8 --timestep 1.0 --mode test --partition custom --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --data /data/qmia/mimic3old/multitask --output_dir /data/qmia/mimic3old/in-hospital-mortality --verbose 1 --load_state {}
 
-        python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_channel_wise_lstms.py --dim 16 --size_coef 8 --dropout 0.3 --depth 1 --batch_size 8 --timestep 1.0 --mode test --partition custom --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --data /data/qmia/mimic3old/multitask --output_dir /data/qmia/mimic3old/in-hospital-mortality --verbose 1 --data_subset train --load_state
+        find /data/qmia/mimic3old/in-hospital-mortality/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0_partition*' | xargs -I {} -P 10 python -um mimic3models.multitask.main --network mimic3models/keras_models/multitask_channel_wise_lstms.py --dim 16 --size_coef 8 --dropout 0.3 --depth 1 --batch_size 8 --timestep 1.0 --mode test --partition custom --ihm_C 0.2 --decomp_C 1.0 --los_C 1.5 --pheno_C 1.0 --data /data/qmia/mimic3old/multitask --output_dir /data/qmia/mimic3old/in-hospital-mortality --verbose 1 --data_subset train --load_state {}
 
 ## Decompensation
 
@@ -69,7 +69,9 @@ To run the models on other test sets you can change the test set path in corresp
 
         python -um mimic3models.decompensation.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode train --size_coef 8.0 --deep_supervision --data /data/qmia/mimic3old/decompensation --output_dir /data/qmia/mimic3old/decompensation --verbose 1
 
-        python -um mimic3models.decompensation.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode test --size_coef 8.0 --deep_supervision --data /data/qmia/mimic3old/decompensation --output_dir /data/qmia/mimic3old/decompensation --verbose 1 --load_state
+        find /data/qmia/mimic3old/decompensation/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.chunk*' | xargs -I {} -P 10 python -um mimic3models.decompensation.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode test --size_coef 8.0 --deep_supervision --data /data/qmia/mimic3old/decompensation --output_dir /data/qmia/mimic3old/decompensation --verbose 1 --load_state {}
+
+        find /data/qmia/mimic3old/decompensation/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.chunk*' | xargs -I {} -P 10 python -um mimic3models.decompensation.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode test --size_coef 8.0 --deep_supervision --data /data/qmia/mimic3old/decompensation --output_dir /data/qmia/mimic3old/decompensation --verbose 1 --data_subset train --load_state {}
 
 ##### Multitask standard LSTM
 
@@ -101,7 +103,9 @@ To run the models on other test sets you can change the test set path in corresp
 
         python -um mimic3models.length_of_stay.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode train --size_coef 8.0 --partition custom --deep_supervision --data /data/qmia/mimic3old/length-of-stay --output_dir /data/qmia/mimic3old/length-of-stay --verbose 1
 
-        python -um mimic3models.length_of_stay.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode test --size_coef 8.0 --partition custom --deep_supervision --data /data/qmia/mimic3old/length-of-stay --output_dir /data/qmia/mimic3old/length-of-stay --verbose 1 --load_state
+        find /data/qmia/mimic3old/length-of-stay/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.partition*' | xargs -I {} -P 10 python -um mimic3models.length_of_stay.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode test --size_coef 8.0 --partition custom --deep_supervision --data /data/qmia/mimic3old/length-of-stay --output_dir /data/qmia/mimic3old/length-of-stay --verbose 1 --load_state {}
+
+        find /data/qmia/mimic3old/length-of-stay/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.dep1.dsup.bs8.ts1.0.partition*' | xargs -I {} -P 10 python -um mimic3models.length_of_stay.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --timestep 1.0 --mode test --size_coef 8.0 --partition custom --deep_supervision --data /data/qmia/mimic3old/length-of-stay --output_dir /data/qmia/mimic3old/length-of-stay --verbose 1 --data_subset train --load_state {}
 
 ##### Multitask standard LSTM
 
@@ -129,7 +133,9 @@ To run the models on other test sets you can change the test set path in corresp
 
         python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode train --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1
 
-        python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --load_state
+        find /data/qmia/mimic3old/phenotyping/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0.epoch*' | xargs -I {} -P 20 python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --load_state {}
+
+        find /data/qmia/mimic3old/phenotyping/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0.epoch*' | xargs -I {} -P 20 python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --data_subset train --load_state {}
 
 ##### Channel-wise LSTM + deep supervision
 
