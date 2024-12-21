@@ -133,9 +133,9 @@ To run the models on other test sets you can change the test set path in corresp
 
         python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode train --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1
 
-        find /data/qmia/mimic3old/phenotyping/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0.epoch*' | xargs -I {} -P 20 python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --load_state {}
+        find /data/qmia/mimic3old/phenotyping/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0.epoch*' | xargs -I {} -P 10 python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --load_state {}
 
-        find /data/qmia/mimic3old/phenotyping/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0.epoch*' | xargs -I {} -P 20 python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --data_subset train --load_state {}
+        find /data/qmia/mimic3old/phenotyping/keras_states -name 'k_channel_wise_lstms.n16.szc8.0.d0.3.dep1.bs8.ts1.0.epoch*' | xargs -I {} -P 10 python -um mimic3models.phenotyping.main --network mimic3models/keras_models/channel_wise_lstms.py --dim 16 --depth 1 --batch_size 8 --dropout 0.3 --timestep 1.0 --mode test --size_coef 8.0 --data /data/qmia/mimic3old/phenotyping --output_dir /data/qmia/mimic3old/phenotyping --verbose 1 --data_subset train --load_state {}
 
 ##### Channel-wise LSTM + deep supervision
 
